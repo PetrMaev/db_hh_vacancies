@@ -14,22 +14,11 @@ class DBCreater:
 
     def __init__(self):
         self.get_password = os.getenv("PASSWORD")
-        self.hh_id_companies = [
-            "68587",
-            "4216955",
-            "78638",
-            "3529",
-            "4181",
-            "654435",
-            "1305791",
-            "39305",
-            "80",
-            "5591530",
-        ]
         self.vacancies_json = JSONFileManager().get_data_from_file()
 
     def db_create(self) -> None:
         """Метод создания баз данных и заполнения их данными"""
+
         connection = psycopg2.connect(
             host="localhost", port="5432", database="vacancies", user="postgres", password=f"{self.get_password}"
         )
@@ -47,17 +36,28 @@ class DBCreater:
 
         cur.execute("DROP TABLE IF EXISTS employers")
 
-        cur.execute("CREATE TABLE employers (employer_id varchar(25) PRIMARY KEY)")
+        cur.execute("CREATE TABLE employers (employer_id varchar(25) PRIMARY KEY, employer_name varchar(225))")
 
         cur.execute(
-            "CREATE TABLE vacancies (id serial PRIMARY KEY, vacancies_id varchar(25), department_name varchar(225), vacancy_name varchar(225) NOT NULL, salary int NOT NULL, url_vacancy text, employer_id varchar(25) REFERENCES employers(employer_id) NOT NULL)"
+            "CREATE TABLE vacancies (id serial PRIMARY KEY, vacancies_id varchar(25), department_name varchar(225), vacancy_name varchar(225) NOT NULL, salary int NOT NULL, url_vacancy text, employer_id varchar(25) REFERENCES employers(employer_id))"
         )
 
         # Фиксируем изменения в базе данных
         connection.commit()
 
-        for id_company in self.hh_id_companies:
-            cur.execute("INSERT INTO employers (employer_id) VALUES (%s) returning *", (id_company,))
+        list_of_id_emp = []
+        list_of_emp_name = []
+        for vacancies in self.vacancies_json:
+            for vacancy in vacancies:
+                if vacancy["employer"]["id"] not in list_of_id_emp:
+                    list_of_id_emp.append(vacancy["employer"]["id"])
+                if vacancy["employer"]["name"] not in list_of_emp_name:
+                    list_of_emp_name.append(vacancy["employer"]["name"])
+
+        employers_dict = dict(zip(list_of_id_emp, list_of_emp_name))
+
+        for k, v in employers_dict.items():
+            cur.execute("INSERT INTO employers (employer_id, employer_name) VALUES (%s, %s) returning *", (k, v))
 
         connection.commit()
         res_employers = cur.fetchall()
