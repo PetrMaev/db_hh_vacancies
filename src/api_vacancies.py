@@ -10,7 +10,7 @@ class HH(ABC):
     """Абстрактный класс для получения вакансий"""
 
     @abstractmethod
-    def get_vacancies(self, companies_id_list: str):
+    def get_vacancies(self, companies_id_list: list):
         pass
 
 
@@ -48,6 +48,6 @@ class HeadHunterAPI(HH):
 
 
 if __name__ == "__main__":
-    hh_id_companies = ["68587", "4216955", "78638", "3529", "4181", "622121", "1305791", "39305", "80", "5591530"]
+    hh_id_companies = ["68587", "4216955", "78638", "3529", "4181", "654435", "1305791", "39305", "80", "5591530"]
     hh_api = HeadHunterAPI()
     hh_vacancies = hh_api.get_vacancies(hh_id_companies)
