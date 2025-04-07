@@ -33,7 +33,8 @@ class DBManager:
 
         connection.commit()
         res_count_vacancies = cur.fetchall()
-        print(res_count_vacancies)
+        for row in res_count_vacancies:
+            print(f'Работодатель: "{row[0]}". Количество вакансий: {row[1]}')
 
         # Закрытие курсора
         cur.close()
@@ -60,7 +61,13 @@ class DBManager:
 
         connection.commit()
         res_all_vacancies = cur.fetchall()
-        print(res_all_vacancies)
+        for row in res_all_vacancies:
+            print(f''
+                  f'Работодатель: "{row[0]}". '
+                  f'Вакансия: "{row[1]}". '
+                  f'Зарплата: {row[2]}. '
+                  f'Ссылка на вакансию: "{row[3]}"'
+                  )
 
         # Закрытие курсора
         cur.close()
@@ -82,7 +89,7 @@ class DBManager:
 
         connection.commit()
         res_avg_vacancies = cur.fetchall()
-        print(res_avg_vacancies)
+        print(f'Средняя зарплата среди всех вакансий: {round(res_avg_vacancies[0][0], 2)} руб.')
 
         # Закрытие курсора
         cur.close()
@@ -111,7 +118,13 @@ class DBManager:
 
         connection.commit()
         res_high_vacancies = cur.fetchall()
-        print(res_high_vacancies)
+        print('Список вакансий с зарплатой выше средней:\n')
+        for row in res_high_vacancies:
+            print(f''
+                  f'Работодатель: "{row[0]}". '
+                  f'Вакансия: "{row[1]}". '
+                  f'Ссылка на вакансию: "{row[2]}"'
+                  )
 
         # Закрытие курсора
         cur.close()
@@ -136,7 +149,12 @@ class DBManager:
 
         connection.commit()
         res_vacancies_with_keyword = cur.fetchall()
-        print(res_vacancies_with_keyword)
+        for row in res_vacancies_with_keyword:
+            print(f''
+                  f'Работодатель: "{row[0]}". '
+                  f'Вакансия: "{row[1]}". '
+                  f'Зарплата: {row[2]} руб.'
+                  )
 
         # Закрытие курсора
         cur.close()
@@ -146,8 +164,8 @@ class DBManager:
 
 
 if __name__ == "__main__":
-    get_count_db = DBManager().get_companies_and_vacancies_count()
-    get_all_vac = DBManager().get_all_vacancies()
-    get_avg_salary = DBManager().get_avg_salary()
-    get_high_salary = DBManager().get_vacancies_with_higher_salary()
+    # get_count_db = DBManager().get_companies_and_vacancies_count()
+    # get_all_vac = DBManager().get_all_vacancies()
+    # get_avg_salary = DBManager().get_avg_salary()
+    # get_high_salary = DBManager().get_vacancies_with_higher_salary()
     get_vacancies_with_keyword = DBManager().get_vacancies_with_keyword("Инженер")
