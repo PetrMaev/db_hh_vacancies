@@ -1,7 +1,6 @@
 import os
 
 import psycopg2
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -62,12 +61,13 @@ class DBManager:
         connection.commit()
         res_all_vacancies = cur.fetchall()
         for row in res_all_vacancies:
-            print(f''
-                  f'Работодатель: "{row[0]}". '
-                  f'Вакансия: "{row[1]}". '
-                  f'Зарплата: {row[2]}. '
-                  f'Ссылка на вакансию: "{row[3]}"'
-                  )
+            print(
+                f""
+                f'Работодатель: "{row[0]}". '
+                f'Вакансия: "{row[1]}". '
+                f"Зарплата: {row[2]}. "
+                f'Ссылка на вакансию: "{row[3]}"'
+            )
 
         # Закрытие курсора
         cur.close()
@@ -89,7 +89,7 @@ class DBManager:
 
         connection.commit()
         res_avg_vacancies = cur.fetchall()
-        print(f'Средняя зарплата среди всех вакансий: {round(res_avg_vacancies[0][0], 2)} руб.')
+        print(f"Средняя зарплата среди всех вакансий: {round(res_avg_vacancies[0][0], 2)} руб.")
 
         # Закрытие курсора
         cur.close()
@@ -118,13 +118,9 @@ class DBManager:
 
         connection.commit()
         res_high_vacancies = cur.fetchall()
-        print('Список вакансий с зарплатой выше средней:\n')
+        print("Список вакансий с зарплатой выше средней:\n")
         for row in res_high_vacancies:
-            print(f''
-                  f'Работодатель: "{row[0]}". '
-                  f'Вакансия: "{row[1]}". '
-                  f'Ссылка на вакансию: "{row[2]}"'
-                  )
+            print(f"" f'Работодатель: "{row[0]}". ' f'Вакансия: "{row[1]}". ' f'Ссылка на вакансию: "{row[2]}"')
 
         # Закрытие курсора
         cur.close()
@@ -142,19 +138,20 @@ class DBManager:
         # Открытие курсора
         cur = connection.cursor()
 
-        cur.execute(f""
-                    f"SELECT department_name, vacancy_name, salary "
-                    f"FROM vacancies "
-                    f"WHERE vacancy_name LIKE '%{search_word}%'")
+        cur.execute(
+            f""
+            f"SELECT department_name, vacancy_name, salary "
+            f"FROM vacancies "
+            f"WHERE vacancy_name LIKE '%{search_word}%'"
+        )
 
         connection.commit()
         res_vacancies_with_keyword = cur.fetchall()
-        for row in res_vacancies_with_keyword:
-            print(f''
-                  f'Работодатель: "{row[0]}". '
-                  f'Вакансия: "{row[1]}". '
-                  f'Зарплата: {row[2]} руб.'
-                  )
+        if res_vacancies_with_keyword:
+            for row in res_vacancies_with_keyword:
+                print(f"" f'Работодатель: "{row[0]}". ' f'Вакансия: "{row[1]}". ' f"Зарплата: {row[2]} руб.")
+        else:
+            print("Вакансии по заданному слову отсутствуют.")
 
         # Закрытие курсора
         cur.close()
