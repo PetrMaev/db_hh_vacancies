@@ -31,7 +31,10 @@ class DBCreater:
         cur.execute("DROP TABLE IF EXISTS vacancies")
 
         cur.execute(
-            "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'employers' AND pid <> pg_backend_pid()"
+            """
+            SELECT pg_terminate_backend(pg_stat_activity.pid) 
+            FROM pg_stat_activity WHERE pg_stat_activity.datname = 'employers' AND pid <> pg_backend_pid()
+            """
         )
 
         cur.execute("DROP TABLE IF EXISTS employers")
@@ -39,7 +42,15 @@ class DBCreater:
         cur.execute("CREATE TABLE employers (employer_id varchar(25) PRIMARY KEY, employer_name varchar(225))")
 
         cur.execute(
-            "CREATE TABLE vacancies (id serial PRIMARY KEY, vacancies_id varchar(25), department_name varchar(225), vacancy_name varchar(225) NOT NULL, salary int NOT NULL, url_vacancy text, employer_id varchar(25) REFERENCES employers(employer_id))"
+            """
+            CREATE TABLE vacancies (
+            id serial PRIMARY KEY, 
+            vacancies_id varchar(25), 
+            department_name varchar(225), 
+            vacancy_name varchar(225) NOT NULL, 
+            salary int NOT NULL, url_vacancy text, 
+            employer_id varchar(25) REFERENCES employers(employer_id))
+            """
         )
 
         # Фиксируем изменения в базе данных
@@ -78,7 +89,16 @@ class DBCreater:
                     name_department = vacancy["employer"]["name"]
 
                 cur.execute(
-                    "INSERT INTO vacancies (vacancies_id, department_name, vacancy_name, salary, url_vacancy, employer_id) VALUES (%s, %s, %s, %s, %s, %s) returning *",
+                    """
+                    INSERT INTO vacancies (
+                    vacancies_id, 
+                    department_name, 
+                    vacancy_name, 
+                    salary, url_vacancy, 
+                    employer_id
+                    ) 
+                    VALUES (%s, %s, %s, %s, %s, %s) returning *
+                    """,
                     (
                         vacancy["id"],
                         name_department,

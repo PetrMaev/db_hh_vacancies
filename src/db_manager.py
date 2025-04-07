@@ -24,7 +24,11 @@ class DBManager:
         cur = connection.cursor()
 
         cur.execute(
-            "SELECT employer_name, COUNT(*) FROM employers JOIN vacancies USING(employer_id) GROUP BY employer_name"
+            """
+            SELECT employer_name, COUNT(*) 
+            FROM employers JOIN vacancies USING(employer_id) 
+            GROUP BY employer_name
+            """
         )
 
         connection.commit()
@@ -48,7 +52,10 @@ class DBManager:
         cur = connection.cursor()
 
         cur.execute(
-            "SELECT employer_name, vacancy_name, salary, url_vacancy FROM vacancies JOIN employers USING(employer_id)"
+            """
+            SELECT employer_name, vacancy_name, salary, url_vacancy 
+            FROM vacancies JOIN employers USING(employer_id)
+            """
         )
 
         connection.commit()
@@ -94,7 +101,12 @@ class DBManager:
         cur = connection.cursor()
 
         cur.execute(
-            "SELECT employer_name, vacancy_name, url_vacancy FROM vacancies JOIN employers USING(employer_id) WHERE salary > 127179"
+            """
+            SELECT employer_name, vacancy_name, url_vacancy 
+            FROM vacancies 
+            JOIN employers USING(employer_id) 
+            WHERE salary > 127179
+            """
         )
 
         connection.commit()
@@ -117,7 +129,10 @@ class DBManager:
         # Открытие курсора
         cur = connection.cursor()
 
-        cur.execute(f"SELECT * FROM vacancies WHERE vacancy_name LIKE '%{search_word}%'")
+        cur.execute(f""
+                    f"SELECT department_name, vacancy_name, salary "
+                    f"FROM vacancies "
+                    f"WHERE vacancy_name LIKE '%{search_word}%'")
 
         connection.commit()
         res_vacancies_with_keyword = cur.fetchall()
