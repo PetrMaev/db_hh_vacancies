@@ -1,42 +1,36 @@
-import os
-
 import psycopg2
-from dotenv import load_dotenv
 
+from config import config
 from src.json_reader import JSONFileManager
-
-load_dotenv()
 
 
 class DBCreater:
     """Класс создания базы данных"""
 
     def __init__(self):
-        self.get_password = os.getenv("PASSWORD")
         self.vacancies_json = JSONFileManager().get_data_from_file()
 
-    def db_create(self) -> None:
+    def db_create(self, params: dict, database_name: str = 'vacancies') -> None:
         """Метод создания баз данных и заполнения их данными"""
 
-        connection = psycopg2.connect(
-            host="localhost", port="5432", database="vacancies", user="postgres", password=f"{self.get_password}"
-        )
-
+        connection = psycopg2.connect(database="postgres", **params)
+        connection.autocommit = True
         # Открытие курсора
         cur = connection.cursor()
 
-        cur.execute("TRUNCATE TABLE vacancies RESTART IDENTITY")
+        cur.execute(f"DROP DATABASE IF EXISTS {database_name}")
 
-        cur.execute("DROP TABLE IF EXISTS vacancies")
+        cur.execute(f"CREATE DATABASE {database_name}")
 
-        cur.execute(
-            """
-            SELECT pg_terminate_backend(pg_stat_activity.pid) 
-            FROM pg_stat_activity WHERE pg_stat_activity.datname = 'employers' AND pid <> pg_backend_pid()
-            """
-        )
+        # Закрытие курсора
+        cur.close()
 
-        cur.execute("DROP TABLE IF EXISTS employers")
+        # Закрытие соединения
+        connection.close()
+
+        connection = psycopg2.connect(database=database_name, **params)
+
+        cur = connection.cursor()
 
         cur.execute("CREATE TABLE employers (employer_id varchar(25) PRIMARY KEY, employer_name varchar(225))")
 
@@ -112,13 +106,11 @@ class DBCreater:
         res_vacancies = cur.fetchall()
         print(res_vacancies)
 
-        # Закрытие курсора
         cur.close()
-
-        # Закрытие соединения
         connection.close()
 
 
 if __name__ == "__main__":
-    create_db = DBCreater().db_create()
+    my_params = config()
+    create_db = DBCreater().db_create(my_params)
     print(create_db)
