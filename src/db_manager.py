@@ -1,23 +1,15 @@
-import os
-
 import psycopg2
-from dotenv import load_dotenv
 
-load_dotenv()
+from config import config
 
 
 class DBManager:
     """Класс для работы с данными базы данных"""
 
-    def __init__(self):
-        self.get_password = os.getenv("PASSWORD")
-
-    def get_companies_and_vacancies_count(self):
+    def get_companies_and_vacancies_count(self, params: dict, database_name: str = 'vacancies'):
         """Метод вывода всех компаний и количество вакансий у каждой компании"""
 
-        connection = psycopg2.connect(
-            host="localhost", port="5432", database="vacancies", user="postgres", password=f"{self.get_password}"
-        )
+        connection = psycopg2.connect(database=database_name, **params)
 
         # Открытие курсора
         cur = connection.cursor()
@@ -41,12 +33,10 @@ class DBManager:
         # Закрытие соединения
         connection.close()
 
-    def get_all_vacancies(self):
+    def get_all_vacancies(self, params: dict, database_name: str = 'vacancies'):
         """Метод получения списка всех вакансий"""
 
-        connection = psycopg2.connect(
-            host="localhost", port="5432", database="vacancies", user="postgres", password=f"{self.get_password}"
-        )
+        connection = psycopg2.connect(database=database_name, **params)
 
         # Открытие курсора
         cur = connection.cursor()
@@ -75,12 +65,10 @@ class DBManager:
         # Закрытие соединения
         connection.close()
 
-    def get_avg_salary(self):
+    def get_avg_salary(self, params: dict, database_name: str = 'vacancies'):
         """Метод получения средней зарплаты"""
 
-        connection = psycopg2.connect(
-            host="localhost", port="5432", database="vacancies", user="postgres", password=f"{self.get_password}"
-        )
+        connection = psycopg2.connect(database=database_name, **params)
 
         # Открытие курсора
         cur = connection.cursor()
@@ -97,12 +85,10 @@ class DBManager:
         # Закрытие соединения
         connection.close()
 
-    def get_vacancies_with_higher_salary(self):
+    def get_vacancies_with_higher_salary(self, params: dict, database_name: str = 'vacancies'):
         """Метод получения списка вакансий, в которых зарплата выше средней"""
 
-        connection = psycopg2.connect(
-            host="localhost", port="5432", database="vacancies", user="postgres", password=f"{self.get_password}"
-        )
+        connection = psycopg2.connect(database=database_name, **params)
 
         # Открытие курсора
         cur = connection.cursor()
@@ -128,12 +114,10 @@ class DBManager:
         # Закрытие соединения
         connection.close()
 
-    def get_vacancies_with_keyword(self, search_word: str):
+    def get_vacancies_with_keyword(self, search_word: str, params: dict, database_name: str = 'vacancies'):
         """Метод получения списка вакансий, в названии которых содержится заданное слово"""
 
-        connection = psycopg2.connect(
-            host="localhost", port="5432", database="vacancies", user="postgres", password=f"{self.get_password}"
-        )
+        connection = psycopg2.connect(database=database_name, **params)
 
         # Открытие курсора
         cur = connection.cursor()
@@ -161,8 +145,9 @@ class DBManager:
 
 
 if __name__ == "__main__":
-    # get_count_db = DBManager().get_companies_and_vacancies_count()
-    # get_all_vac = DBManager().get_all_vacancies()
-    # get_avg_salary = DBManager().get_avg_salary()
-    # get_high_salary = DBManager().get_vacancies_with_higher_salary()
-    get_vacancies_with_keyword = DBManager().get_vacancies_with_keyword("Инженер")
+    my_params = config()
+    # get_count_db = DBManager().get_companies_and_vacancies_count(my_params)
+    # get_all_vac = DBManager().get_all_vacancies(my_params)
+    # get_avg_salary = DBManager().get_avg_salary(my_params)
+    # get_high_salary = DBManager().get_vacancies_with_higher_salary(my_params)
+    get_vacancies_with_keyword = DBManager().get_vacancies_with_keyword("Спец", my_params)
