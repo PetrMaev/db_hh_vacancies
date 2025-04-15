@@ -20,7 +20,7 @@ class HeadHunterAPI(HH):
     def __init__(self):
         self.__url = "https://api.hh.ru/vacancies"
         self.__headers = {"User-Agent": "HH-User-Agent"}
-        self.__params = {"employer_id": "", "only_with_salary": True}
+        self.__params = {"employer_id": "", "page": 0, "per_page": 10, "only_with_salary": True}
         self.vacancies = []
 
     def get_vacancies(self, companies_id_list: list) -> None:
