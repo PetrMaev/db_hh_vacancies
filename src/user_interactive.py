@@ -3,6 +3,7 @@ from src.db_creater import DBCreater
 from src.db_manager import DBManager
 
 from config import PATH_TO_HH_DATABASE
+from src.json_reader import JSONFileManager
 
 
 def get_data_for_create_db():
@@ -18,12 +19,13 @@ def get_data_for_create_db():
     with open(PATH_TO_HH_DATABASE, 'w', encoding='utf-8') as f:
         f.write(new_params)
 
+    data = JSONFileManager().get_data_from_file()
     params = config()
-    DBCreater().db_create(params, database_name)
+    DBCreater().db_create(params, data, database_name)
 
     # Вывод информации по количеству вакансий у работодателей
     while True:
-        question_1 = input("Вывести информацию по количеству вакансий у работодателей из базы данных: Да\Нет ").lower()
+        question_1 = input(r"Вывести информацию по количеству вакансий у работодателей из базы данных: Да\Нет").lower()
 
         if question_1 == "да":
             print("Вывожу список работодателей с количеством вакансий:")
@@ -33,11 +35,11 @@ def get_data_for_create_db():
         elif question_1 == "нет":
             break
         else:
-            print(f"Ошибка. Повторите попытку.\n")
+            print("Ошибка. Повторите попытку.\n")
 
     # Вывод информации по всем вакансиям базы данных
     while True:
-        question_2 = input("Вывести информацию по всем вакансиям базы данных: Да\Нет ").lower()
+        question_2 = input(r"Вывести информацию по всем вакансиям базы данных: Да\Нет").lower()
 
         if question_2 == "да":
             print("Вывожу список всех вакансий:")
@@ -47,11 +49,11 @@ def get_data_for_create_db():
         elif question_2 == "нет":
             break
         else:
-            print(f"Ошибка. Повторите попытку.\n")
+            print("Ошибка. Повторите попытку.\n")
 
     # Вывода средней зарплаты вакансий.
     while True:
-        question_3 = input("Вывести среднюю зарплату вакансий базы данных: Да\Нет ").lower()
+        question_3 = input(r"Вывести среднюю зарплату вакансий базы данных: Да\Нет").lower()
 
         if question_3 == "да":
             print("Вывожу среднюю зарплату:")
@@ -61,11 +63,11 @@ def get_data_for_create_db():
         elif question_3 == "нет":
             break
         else:
-            print(f"Ошибка. Повторите попытку.\n")
+            print("Ошибка. Повторите попытку.\n")
 
     # Вывод вакансий с зарплатой выше средней.
     while True:
-        question_4 = input("Вывести информацию по вакансиям с зарплатой выше средней: Да\Нет ").lower()
+        question_4 = input(r"Вывести информацию по вакансиям с зарплатой выше средней: Да\Нет").lower()
 
         if question_4 == "да":
             get_high_salary = DBManager().get_vacancies_with_higher_salary(params, database_name)
@@ -74,10 +76,10 @@ def get_data_for_create_db():
         elif question_4 == "нет":
             break
         else:
-            print(f"Ошибка. Повторите попытку.\n")
+            print("Ошибка. Повторите попытку.\n")
 
     # Вывод вакансий по заданному слову.
-    search_query = input("Введите ключевое слово для фильтрации вакансий: ")
+    search_query = input("Введите ключевое слово для фильтрации вакансий:")
     get_vacancies_of_keyword = DBManager().get_vacancies_with_keyword(search_query, params, database_name)
     print(get_vacancies_of_keyword)
 
