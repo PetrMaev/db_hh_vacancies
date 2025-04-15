@@ -7,10 +7,7 @@ from src.json_reader import JSONFileManager
 class DBCreater:
     """Класс создания базы данных"""
 
-    def __init__(self):
-        self.vacancies_json = JSONFileManager().get_data_from_file()
-
-    def db_create(self, params: dict, database_name: str = 'vacancies') -> None:
+    def db_create(self, params: dict, data: dict, database_name: str = 'vacancies') -> None:
         """Метод создания баз данных и заполнения их данными"""
 
         connection = psycopg2.connect(database="postgres", **params)
@@ -51,7 +48,7 @@ class DBCreater:
 
         list_of_id_emp = []
         list_of_emp_name = []
-        for vacancies in self.vacancies_json:
+        for vacancies in data:
             for vacancy in vacancies:
                 if vacancy["employer"]["id"] not in list_of_id_emp:
                     list_of_id_emp.append(vacancy["employer"]["id"])
@@ -67,7 +64,7 @@ class DBCreater:
         res_employers = cur.fetchall()
         print(res_employers)
 
-        for vacancies in self.vacancies_json:
+        for vacancies in data:
             for vacancy in vacancies:
                 if vacancy["salary"]["from"] is not None and vacancy["salary"]["to"] is not None:
                     salary = (int(vacancy["salary"]["from"]) + int(vacancy["salary"]["to"])) / 2
@@ -112,5 +109,6 @@ class DBCreater:
 
 if __name__ == "__main__":
     my_params = config()
-    create_db = DBCreater().db_create(my_params)
+    vacancies_json = JSONFileManager().get_data_from_file()
+    create_db = DBCreater().db_create(my_params, vacancies_json)
     print(create_db)
