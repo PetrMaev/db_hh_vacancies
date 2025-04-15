@@ -15,10 +15,10 @@ class FileManager(ABC):
 
 
 class JSONFileManager(FileManager):
-    """Класс для работы с вакансиями из csv-файла"""
+    """Класс для работы с вакансиями из json-файла"""
 
     def get_data_from_file(self, path_to_file=PATH_TO_HH_VACANCIES):
-        """Метод получения данных из csv-файла"""
+        """Метод получения данных из json-файла"""
         try:
             if os.path.isfile(path_to_file) and os.stat(path_to_file).st_size != 0:
                 with open(path_to_file, "r", encoding="utf-8") as file:
