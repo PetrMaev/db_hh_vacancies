@@ -6,7 +6,7 @@
 ## Установка:
 1. Клонируйте репозиторий:
 ```python
-git@github.com:PetrMaev/course_project_3.git
+https://github.com/PetrMaev/db_hh_vacancies.git
 ```
 2. Установите зависимости:
 ```python
